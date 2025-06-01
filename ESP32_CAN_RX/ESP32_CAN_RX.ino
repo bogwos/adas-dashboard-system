@@ -1,5 +1,6 @@
 /* ---- RECEIVER ---- */
 
+/*
 #include <CAN.h>
 
 #define TX_GPIO_NUM 32 // Connects to CTX
@@ -28,7 +29,7 @@ void setup() {
 
 void loop() {
     canReceiver();
-    delay(250);
+    delay(500);
 }
 
 void canSender() {
@@ -94,4 +95,37 @@ void canReceiver() {
 
         Serial.println();
     }
+}
+*/
+
+#include <CAN.h>
+
+#define TX_GPIO_NUM 32
+#define RX_GPIO_NUM 34
+
+void setup() {
+    Serial.begin(115200);
+    while (!Serial)
+        ;
+    delay(1000);
+
+    CAN.setPins(RX_GPIO_NUM, TX_GPIO_NUM);
+
+    if (!CAN.begin(500E3)) {
+        Serial.println("CAN init failed");
+        while (1)
+            ;
+    }
+
+    Serial.println("CAN Sender Initialized");
+}
+
+void loop() {
+    CAN.beginPacket(0x12);
+    CAN.write('H');
+    CAN.write('i');
+    CAN.endPacket();
+
+    Serial.println("Sent CAN packet");
+    delay(1000);
 }
