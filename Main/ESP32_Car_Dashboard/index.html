@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>ESP32-based Car Dashboard</title>
+		<meta charset="utf-8" />
+		<style>
+			* {
+				padding: 0;
+				margin: 0;
+				box-sizing: border-box;
+			}
+
+			body {
+				font-family: "system-ui", sans-serif;
+				background: #282c34;
+				color: #dedede;
+				padding: 0.75rem;
+
+				display: flex;
+				flex-direction: column;
+				gap: 0.75rem;
+			}
+
+			.title {
+				font-size: 2rem;
+			}
+
+			.dashboard-container {
+				width: 100%;
+				height: calc(100vh - 0.75rem - 2rem - 0.75rem - 0.75rem - 0.75rem);
+				background: rgba(255, 255, 255, 0.05);
+				border: 2px solid rgba(255, 255, 255, 0.1);
+				border-radius: 20px;
+				padding: 0.75rem;
+
+				display: flex;
+				align-items: center;
+				gap: 1rem;
+			}
+
+			.speedometer-section {
+				flex: 2;
+
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				gap: 0.75rem;
+			}
+
+			.speedometer {
+				position: relative;
+				width: 400px;
+				height: 200px;
+			}
+
+			.gauge {
+				position: relative;
+				width: 100%;
+				height: 100%;
+				border-top-left-radius: 200px;
+				border-top-right-radius: 200px;
+				border-top: solid 6px rgba(255, 255, 255, 0.2);
+				border-left: solid 6px rgba(255, 255, 255, 0.2);
+				border-right: solid 6px rgba(255, 255, 255, 0.2);
+			}
+
+			.tick {
+				position: absolute;
+				width: 2px;
+				height: 20px;
+				background: white;
+				top: 0;
+				left: 50%;
+				transform-origin: bottom center;
+			}
+			.tick-0 {
+				transform: translateX(calc(-172px + 50%)) translateY(172px)
+					rotate(-90deg);
+			}
+			.tick-50 {
+				transform: translateX(calc(-50% - 117px)) translateY(53px)
+					rotate(-45deg);
+			}
+			.tick-100 {
+				transform: translateY(5px);
+			}
+			.tick-150 {
+				transform: translateX(calc(-50% + 117px)) translateY(53px) rotate(45deg);
+			}
+			.tick-200 {
+				transform: translateX(calc(188px + 50%)) translateY(172px)
+					rotate(-90deg);
+			}
+
+			.label {
+				position: absolute;
+				color: white;
+				font-size: 18px;
+				font-weight: bold;
+			}
+			.label-0 {
+				left: calc(0% - 25px);
+				top: 178px;
+			}
+			.label-50 {
+				left: calc(20% - 44px);
+				top: calc(60px - 34px);
+			}
+			.label-100 {
+				left: 50%;
+				transform: translateX(-50%);
+				top: -35px;
+			}
+			.label-150 {
+				left: calc(73% + 46px);
+				top: calc(60px - 35px);
+			}
+			.label-200 {
+				right: calc(0% - 45px);
+				top: 178px;
+			}
+
+			.center-dot {
+				position: absolute;
+				width: 10px;
+				height: 10px;
+				background: #ff4444;
+				border-radius: 50%;
+				left: 50%;
+				top: 100%;
+				transform: translate(-50%, -50%);
+				z-index: 5;
+			}
+
+			.speed-needle {
+				position: absolute;
+				width: 4px;
+				height: 140px;
+				background: #ff4444;
+				top: 100%;
+				left: 50%;
+				transform-origin: bottom center;
+				transform: translate(-50%, -100%) rotate(-90deg);
+				transition: transform 0.3s ease;
+				border-radius: 2px;
+				z-index: 4;
+			}
+
+			.speed-display {
+				margin-top: 1rem;
+				font-size: 1.5rem;
+				font-weight: bold;
+				background: rgba(255, 255, 255, 0.05);
+				border: 1px solid rgba(255, 255, 255, 0.1);
+				border-radius: 10px;
+				padding: 0.5rem 1rem;
+				text-align: center;
+			}
+
+			.sensors-section {
+				flex: 1;
+				display: flex;
+				flex-direction: column;
+				gap: 0.5rem;
+			}
+
+			.sensor-box {
+				background: rgba(255, 255, 255, 0.05);
+				border: 1px solid rgba(255, 255, 255, 0.1);
+				border-radius: 15px;
+				padding: 0.5rem;
+				text-align: center;
+			}
+
+			.sensor-label {
+				font-size: 1.2em;
+				margin-bottom: 8px;
+				color: #ccc;
+			}
+
+			.sensor-value {
+				font-size: 2em;
+				font-weight: bold;
+				color: #00ddff;
+				text-shadow: 0 0 8px rgba(0, 221, 255, 0.5);
+			}
+
+			@media (max-width: 768px) {
+				.dashboard-container {
+					flex-direction: column-reverse;
+				}
+
+				.sensors-section {
+					flex-direction: row;
+					height: max-content;
+				}
+
+				.sensor-box {
+					height: max-content;
+					padding-inline: 2rem;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<h1 class="title">ESP32-based Car Dashboard</h1>
+
+		<div class="dashboard-container">
+			<div class="speedometer-section">
+				<div class="speedometer">
+					<div class="gauge">
+						<!-- Tick marks -->
+						<div class="tick tick-0"></div>
+						<div class="tick tick-50"></div>
+						<div class="tick tick-100"></div>
+						<div class="tick tick-150"></div>
+						<div class="tick tick-200"></div>
+
+						<!-- Labels -->
+						<div class="label label-0">0</div>
+						<div class="label label-50">50</div>
+						<div class="label label-100">100</div>
+						<div class="label label-150">150</div>
+						<div class="label label-200">200</div>
+
+						<!-- Center dot -->
+						<div class="center-dot"></div>
+
+						<!-- Needle -->
+						<div class="speed-needle" id="speedNeedle"></div>
+					</div>
+				</div>
+				<div class="speed-display" id="speedDisplay">0 km/h</div>
+			</div>
+
+			<div class="sensors-section">
+				<div class="sensor-box">
+					<div class="sensor-label">Touch</div>
+					<div class="sensor-value" id="touchValue">0</div>
+				</div>
+				<div class="sensor-box">
+					<div class="sensor-label">Temperature</div>
+					<div class="sensor-value" id="tempValue">0°C</div>
+				</div>
+				<div class="sensor-box">
+					<div class="sensor-label">Light</div>
+					<div class="sensor-value" id="lightValue">0</div>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			let currentSpeed = 0;
+			let sensorData = {
+				touch: 0,
+				temperature: 0,
+				light: 0,
+			};
+
+			function updateSpeedometer(speed) {
+				currentSpeed = Math.max(0, Math.min(200, speed));
+				const angle = -90 + (currentSpeed / 200) * 180;
+
+				document.getElementById(
+					"speedNeedle"
+				).style.transform = `translate(-50%, -100%) rotate(${angle}deg)`;
+
+				document.getElementById(
+					"speedDisplay"
+				).textContent = `${currentSpeed} km/h`;
+			}
+
+			function updateSensors(data) {
+				document.getElementById("touchValue").textContent = data.touch;
+				document.getElementById(
+					"tempValue"
+				).textContent = `${data.temperature}°C`;
+				document.getElementById("lightValue").textContent = data.light;
+			}
+
+			function fetchData() {
+				fetch("/data")
+					.then((response) => response.json())
+					.then((data) => {
+						updateSpeedometer(data.speed || 0);
+						updateSensors({
+							touch: data.touch || 0,
+							temperature: data.temperature || 0,
+							light: data.light || 0,
+						});
+					});
+			}
+
+			setInterval(fetchData, 1000);
+			fetchData();
+		</script>
+	</body>
+</html>
