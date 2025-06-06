@@ -240,12 +240,12 @@ const char *htmlPage = R"rawliteral(
 					<div class="sensor-value" id="touchValue">0</div>
 				</div>
 				<div class="sensor-box">
-					<div class="sensor-label">Temperature</div>
-					<div class="sensor-value" id="tempValue">0°C</div>
+					<div class="sensor-label">Roll Angle</div>
+					<div class="sensor-value" id="rollAngle">0°</div>
 				</div>
 				<div class="sensor-box">
-					<div class="sensor-label">Light</div>
-					<div class="sensor-value" id="lightValue">0</div>
+					<div class="sensor-label">Max Speed</div>
+					<div class="sensor-value" id="maxSpeed">200 km/h</div>
 				</div>
 			</div>
 		</div>
@@ -258,8 +258,8 @@ const char *htmlPage = R"rawliteral(
 				light: 0,
 			};
 
-			function updateSpeedometer(speed) {
-				currentSpeed = Math.max(0, Math.min(200, speed));
+			function updateSpeedometer(speed, maxSpeed) {
+				currentSpeed = Math.max(0, Math.min(maxSpeed, speed));
 				const angle = -90 + (currentSpeed / 200) * 180;
 
 				document.getElementById(
@@ -274,20 +274,20 @@ const char *htmlPage = R"rawliteral(
 			function updateSensors(data) {
 				document.getElementById("touchValue").textContent = data.touch;
 				document.getElementById(
-					"tempValue"
-				).textContent = `${data.temperature}°C`;
-				document.getElementById("lightValue").textContent = data.light;
+					"rollAngle"
+				).textContent = `${data.accAngleX}°`;
+                document.getElementById("maxSpeed").textContent = `${data.maxSpeed} km/h`;
 			}
 
 			function fetchData() {
 				fetch("/data")
 					.then((response) => response.json())
 					.then((data) => {
-						updateSpeedometer(data.speed || 0);
+						updateSpeedometer(data.speed || 0, data.maxSpeed || 0);
 						updateSensors({
-							touch: data.touch || 0,
-							temperature: data.temperature || 0,
-							light: data.light || 0,
+							touch: data.touchSensorValue || 0,
+							accAngleX: data.accAngleX || 0,
+                            maxSpeed: data.maxSpeed || 0
 						});
 					});
 			}
