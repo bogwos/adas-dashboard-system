@@ -23,12 +23,12 @@ const char *htmlPage = R"rawliteral(
 			}
 
 			.title {
-				font-size: 2rem;
+				font-size: 1.5rem;
 			}
 
 			.dashboard-container {
 				width: 100%;
-				height: calc(100vh - 0.75rem - 2rem - 0.75rem - 0.75rem - 0.75rem);
+				height: calc(100vh - 0.75rem - 1.5rem - 0.75rem - 0.75rem - 0.75rem);
 				background: rgba(255, 255, 255, 0.05);
 				border: 2px solid rgba(255, 255, 255, 0.1);
 				border-radius: 20px;
@@ -254,8 +254,8 @@ const char *htmlPage = R"rawliteral(
 			let currentSpeed = 0;
 			let sensorData = {
 				touch: 0,
-				temperature: 0,
-				light: 0,
+				accAngleX: 0,
+				maxSpeed: 0,
 			};
 
 			function updateSpeedometer(speed, maxSpeed) {
@@ -274,9 +274,9 @@ const char *htmlPage = R"rawliteral(
 			function updateSensors(data) {
 				document.getElementById("touchValue").textContent = data.touch;
 				document.getElementById(
-					"rollAngle"
-				).textContent = `${data.accAngleX}°`;
-                document.getElementById("maxSpeed").textContent = `${data.maxSpeed} km/h`;
+                    "rollAngle"
+                ).textContent = `${data.accAngleX}°`;
+				document.getElementById("maxSpeed").textContent = `${data.maxSpeed} km/h`;
 			}
 
 			function fetchData() {
@@ -287,7 +287,7 @@ const char *htmlPage = R"rawliteral(
 						updateSensors({
 							touch: data.touchSensorValue || 0,
 							accAngleX: data.accAngleX || 0,
-                            maxSpeed: data.maxSpeed || 0
+							maxSpeed: data.maxSpeed || 0
 						});
 					});
 			}
