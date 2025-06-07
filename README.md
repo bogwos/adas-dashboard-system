@@ -80,3 +80,14 @@ A simple, responsive dashboard is served by the ESP32. It shows:
 Whether you're into embedded systems, automotive safety, or practical AI, this project bridges them all in one place.
 
 Suggestions, feedback, and contributions are always welcome!
+
+## Contributors
+
+This project was built by a team of 6 students as part of a school project. Connect with us on LinkedIn!
+
+- **[Choaib ELMADI - LinkedIn](https://www.linkedin.com/in/choaib-elmadi)**
+- **[Zakaria AGHADJOUR - LinkedIn](https://www.linkedin.com/in/zakaria-aghadjour)**
+- **[Firdaous ENNACHAT - LinkedIn](https://www.linkedin.com/in/firdaous-ennachat-951ab5328)**
+- **[Ayoub Elhazmiri - LinkedIn](https://www.linkedin.com/in/ayoub-elhazmiri-6a1052285)**
+- **[Kaoutar Achergui - LinkedIn](https://www.linkedin.com/in/kaoutar-achergui-b847b6268)**
+- **Mohamed Elouisi**
