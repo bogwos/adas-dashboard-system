@@ -8,7 +8,7 @@ This repository documents a school project for designing a vehicle dashboard sys
 
 ![Dashboard UI](./Images/dashboard-ui.png)
 
-![Visual Wiring Diagram](./Circuit%20Diagram/visual-wiring-diagram.jpg)
+![Visual Wiring Diagram](./Images/visual-wiring-diagram.png)
 
 </div>
 
